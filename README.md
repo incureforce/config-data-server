@@ -63,7 +63,7 @@ If the the server deemed the login credentials as correct, it will return a toke
 
 ### DATA
 
-The Path for all data operations can be a navigation in side the JSON object itself.
+The Path for all data operations can be a navigation inside the JSON object itself.
 
 E.g.
 
