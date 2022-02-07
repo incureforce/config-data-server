@@ -110,7 +110,7 @@ core["data"] = function data(ctx) {
 
     const user = config.users[auth.token.user];
 
-    if (auth.success == false || user.projects.indexOf(host) < 0) {
+    if (auth.success == false || user.apps.indexOf(host) < 0) {
         throw new ErrorModel("E_JWT_TOKEN_INVALID", 401, 'Unauthorized');
     }
 
