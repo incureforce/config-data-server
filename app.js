@@ -5,4 +5,7 @@ const server = http.createServer(async (req, res) => {
     await handler.handle(req, res);
 });
 
-server.listen(8080);
+const serverHandle = server.listen(8080);
+
+process.once('SIGINT', () => serverHandle.close());
+process.once('SIGKILL', () => serverHandle.close());

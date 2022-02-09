@@ -126,6 +126,8 @@ Request the first item from the list on foo;
 
 ## Notes
 
-This was a project I wanted to do for a long time but I didn't really had time/motivation for it. It also was relativly easy to implemented (under 8h). Bonus Points: It dosen't use any external npm packages. Not even for JWT auth (takes to the awesome nodejs base packages).
+This was a project I wanted to do for a long time but I didn't really have time/motivation. It also was relativly easy to implement (under 8h). Bonus Points: It dosen't use any external npm packages. Not even for JWT auth (thanks to the awesome nodejs base packages).
 
 Thanks for reading and have a good day or night.
+
+
