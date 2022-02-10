@@ -3,6 +3,8 @@ const path = require('path');
 
 const ENV = require('./app-env');
 
+const APPS_DIR = 'apps';
+
 const core = {
     persist: storagePersist,
     restore: storageRestore,
@@ -12,8 +14,8 @@ const core = {
 
 module.exports = core;
 
-const data = ENV.data;
-const fullPath = path.join(data, "app-config.json");
+const appsPath = path.join(ENV.data, APPS_DIR);
+const fullPath = path.join(ENV.data, "app-config.json");
 
 fs.readFile(fullPath, (err, data) => {
     if (err) throw err;
@@ -21,6 +23,8 @@ fs.readFile(fullPath, (err, data) => {
     const config = core.config;
 
     Object.assign(config, JSON.parse(data));
+
+    fs.mkdirSync(appsPath, { recursive: true });
 
     const apps = config.apps;
 
@@ -30,7 +34,7 @@ fs.readFile(fullPath, (err, data) => {
 });
 
 function storagePersist(app, name) {
-    const fullPath = path.join(data, "apps", name + ".json");
+    const fullPath = path.join(appsPath, name + ".json");
 
     fs.writeFile(fullPath, JSON.stringify(app), (err) => {
         if (err) throw err;
@@ -38,8 +42,8 @@ function storagePersist(app, name) {
 }
 
 function storageRestore(app, name) {
-    const fullPath = path.join(data, "apps2", name + ".json");
-    
+    const fullPath = path.join(appsPath, name + ".json");
+
     if (!fs.existsSync(fullPath)) {
         return;
     }
