@@ -34,9 +34,13 @@ The server itself needs a minimal set of configuration values to work:
 
 ```json
 {
+    "jwt": {
+        "secret": "test",
+        "expiration": 6000
+    },
     "users": {
         "admin": {
-            "secret": "2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b", //secret
+            "secret": "2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b",
             "apps": [
                 "demo"
             ]
@@ -55,6 +59,10 @@ The server itself needs a minimal set of configuration values to work:
         - `apps` is a list of apps a user has access to
 
 - `Apps` define the Configuration root paths by host. E.g. if you send a Header with `Host: demo` all auth & data operations are executed against the `demo` app.
+
+- `JWT` JWT Configuration
+    - `secret` master secret for hashing
+    - `expiration` expiration time in seconds
 
 ## API
 
