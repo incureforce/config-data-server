@@ -1,34 +1,12 @@
-const fs = require('fs');
 const crypto = require('crypto');
 
 const JWT = require('./app-jwt');
 const Utils = require('./app-utils');
+const Storage = require('./app-storage');
 
 const { ErrorModel } = require("./Models/ErrorModel");
 
-const config = require('./app-config.json');
-
-const apps = config.apps;
-
-exports.apps = apps;
-
-for (const app of Object.keys(apps)) {
-    storageRestore(apps[app], app);
-}
-
-function storagePersist(app, name) {
-    fs.writeFile("./data/" + name + ".json", JSON.stringify(app), (err) => {
-        if (err) throw err;
-    });
-}
-
-function storageRestore(app, name) {
-    fs.readFile("./data/" + name + ".json", (err, data) => {
-        if (err) throw err;
-
-        Object.assign(app, JSON.parse(data));
-    });
-}
+const config = Storage.config;
 
 const core = {};
 
@@ -53,6 +31,7 @@ core["secret"] = function secret(ctx) {
 core["token"] = function token(ctx) {
     const auth = ctx.auth;
     const content = ctx.content;
+    const config = Storage.config;
 
     const search = new URLSearchParams(content.toString());
 
@@ -92,6 +71,7 @@ function perfTracker() {
 
 core["data"] = function data(ctx) {
     const auth = ctx.auth;
+    const apps = config.apps;
     const content = ctx.content;
     const [data, ...segments] = ctx.segments;
     const perf = perfTracker();
@@ -123,7 +103,7 @@ core["data"] = function data(ctx) {
 
         from[storageLeaf.path] = JSON.parse(content);
 
-        storagePersist(storage, host);
+        Storage.persist(storage, host);
 
         return perf({
             ok: true,
@@ -143,7 +123,7 @@ core["data"] = function data(ctx) {
 
         from[storageLeaf.path] = JSON.parse(content);
 
-        storagePersist(storage, host);
+        Storage.persist(storage, host);
 
         return perf({
             ok: true,
@@ -161,7 +141,7 @@ core["data"] = function data(ctx) {
 
         Utils.merge(storageLeaf, JSON.parse(content));
 
-        storagePersist(storage, host);
+        Storage.persist(storage, host);
 
         return perf({
             ok: true,
@@ -175,7 +155,7 @@ core["data"] = function data(ctx) {
 
         delete storageLeaf.from[storageLeaf.path];
 
-        storagePersist(storage, host);
+        Storage.persist(storage, host);
 
         return perf({
             ok: true,
@@ -184,3 +164,4 @@ core["data"] = function data(ctx) {
 
     throw new ErrorModel("E_METHOD_NOT_SUPPORTED", 404, "NOT FOUND");
 };
+

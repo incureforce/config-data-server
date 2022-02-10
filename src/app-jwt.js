@@ -1,10 +1,12 @@
 const crypto = require('crypto');
 
+const Storage = require('./app-storage');
+
 const { ErrorModel } = require("./Models/ErrorModel");
 
-const key = 'test';
 const alg = 'HS256';
-const expirationInSeconds = 60 * 10;
+
+const config = Storage.config;
 
 const core = {
     encodeToken(user, origin) {
@@ -19,10 +21,10 @@ const core = {
             aud: origin,
             iat: unix,
             nbf: unix,
-            exp: unix + expirationInSeconds,
+            exp: unix + config.jwt.expiration,
             jti: crypto.randomUUID(),
         }));
-        const signature = crypto.createHmac('SHA256', key)
+        const signature = crypto.createHmac('SHA256', config.jwt.secret)
             .update(encodedContent)
             .digest('hex');
 
@@ -46,7 +48,7 @@ const core = {
         const contentBuffer = Buffer.from(encodedContent, 'base64');
 
         const clientSignature = Buffer.from(signature, 'hex');
-        const serverSignature = crypto.createHmac('SHA256', key)
+        const serverSignature = crypto.createHmac('SHA256', config.jwt.secret)
             .update(contentBuffer)
             .digest();
 

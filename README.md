@@ -4,6 +4,30 @@
 
 JSON REST InMemory (but persisted on disk) Server for storing configuration data depending on Host Header, with JWT protection for modification.
 
+## Docker
+
+Building the Docker image
+
+```bash
+docker build . --tag cds-server:alpine-3.14 --tag cds-server:latest
+```
+
+Creating Volume & Container
+
+```bash
+docker volume create cds-server-data
+docker create -it -p 8080:8080 -v cds-server-data:/data -it --name cds-server cds-server:latest
+docker run cds-server
+```
+
+> THE SERVER WILL FAIL WITHOUT A CONFIGURATION FILE, ensure that the volume has a complete configuration file on it!
+
+Copying data to the volume
+
+```bash
+docker cp data/app-config.json cds-server:/data/app-config.json
+```
+
 ## API Config
 
 The server itself needs a minimal set of configuration values to work:

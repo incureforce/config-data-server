@@ -1,5 +1,6 @@
 const JWT = require('./app-jwt');
 const API = require("./app-api");
+const ENV = require("./app-env");
 
 const { ErrorModel } = require("./Models/ErrorModel");
 
@@ -18,8 +19,6 @@ const core = {
 };
 
 module.exports = core;
-
-const production = (process.env.NODE_ENV || 'production') != 'development';
 
 async function wrap(req, res) {
     try {
@@ -42,7 +41,7 @@ async function wrap(req, res) {
         res.statusCode = $err.statusCode || 500;
         res.statusMessage = $err.statusMessage || 'Internal Server Error';
 
-        if (production) {
+        if (ENV.production) {
             return {
                 message: $err.message,
             };    
