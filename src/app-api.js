@@ -88,9 +88,13 @@ core["data"] = function data(ctx) {
         return storageLeaf.next;
     }
 
-    const user = config.users[auth.token.user];
+    if (auth.success == false) {
+        throw new ErrorModel("E_JWT_TOKEN_INVALID", 401, 'Unauthorized');
+    }
 
-    if (auth.success == false || user.apps.indexOf(host) < 0) {
+    const user = config.users[auth.token];
+
+    if (user.apps.indexOf(host) < 0) {
         throw new ErrorModel("E_JWT_TOKEN_INVALID", 401, 'Unauthorized');
     }
 

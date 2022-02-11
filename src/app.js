@@ -9,4 +9,5 @@ const server = http.createServer(async (req, res) => {
 
 const serverHandle = server.listen(ENV.port);
 
+process.once('SIGTERM', () => serverHandle.close());
 process.once('SIGINT', () => serverHandle.close());
