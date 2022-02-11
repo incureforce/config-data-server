@@ -24,6 +24,10 @@ async function wrap(req, res) {
     try {
         const ctx = await decodeRequest(req);
 
+        if (typeof ctx.auth.origin != 'string') {
+            throw new ErrorModel("E_ORIGIN_NOT_FOUND");
+        }
+
         const segments = ctx.segments;
         const [segment] = segments;
 
@@ -94,13 +98,19 @@ async function decodeRequest(req) {
 
     const auth = {
         success: false,
-        host: null,
+        origin: null,
     };
 
-    if ('host' in req.headers) {
-        const header = req.headers['host'];
+    if (!ENV.production) {
+        auth.origin = 'demo';
+    }
+    else
+    if ('origin' in req.headers) {
+        const header = req.headers['origin'];
 
-        auth.host = header;
+        if (header.startsWith('localhost') == false) {
+            auth.origin = header;
+        }
     }
 
     if ('authorization' in req.headers) {
@@ -108,7 +118,7 @@ async function decodeRequest(req) {
         const bearerToken = header.match(authBearerPattern);
 
         if (bearerToken) {
-            auth.token = JWT.decodeToken(bearerToken[1], auth.host);
+            auth.token = JWT.decodeToken(bearerToken[1], auth.origin);
             auth.success = true;
         }
     }

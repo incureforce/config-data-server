@@ -48,7 +48,7 @@ core["token"] = function token(ctx) {
             throw new ErrorModel("E_USER_LOGIN");
         }
 
-        const token = JWT.encodeToken(username, auth.host);
+        const token = JWT.encodeToken(username, auth.origin);
 
         return {
             token: token
@@ -76,8 +76,8 @@ core["data"] = function data(ctx) {
     const [data, ...segments] = ctx.segments;
     const perf = perfTracker();
 
-    const host = auth.host;
-    const storage = apps[host];
+    const origin = auth.origin;
+    const storage = apps[origin];
     const storageLeaf = Utils.walk(storage, segments);
 
     if (ctx.method == 'GET') {
@@ -94,7 +94,7 @@ core["data"] = function data(ctx) {
 
     const user = config.users[auth.token];
 
-    if (user.apps.indexOf(host) < 0) {
+    if (user.apps.indexOf(origin) < 0) {
         throw new ErrorModel("E_JWT_TOKEN_INVALID", 401, 'Unauthorized');
     }
 
@@ -107,7 +107,7 @@ core["data"] = function data(ctx) {
 
         from[storageLeaf.path] = JSON.parse(content);
 
-        Storage.persist(storage, host);
+        Storage.persist(storage, origin);
 
         return perf({
             ok: true,
@@ -127,7 +127,7 @@ core["data"] = function data(ctx) {
 
         from[storageLeaf.path] = JSON.parse(content);
 
-        Storage.persist(storage, host);
+        Storage.persist(storage, origin);
 
         return perf({
             ok: true,
@@ -145,7 +145,7 @@ core["data"] = function data(ctx) {
 
         Utils.merge(storageLeaf, JSON.parse(content));
 
-        Storage.persist(storage, host);
+        Storage.persist(storage, origin);
 
         return perf({
             ok: true,
@@ -159,7 +159,7 @@ core["data"] = function data(ctx) {
 
         delete storageLeaf.from[storageLeaf.path];
 
-        Storage.persist(storage, host);
+        Storage.persist(storage, origin);
 
         return perf({
             ok: true,
