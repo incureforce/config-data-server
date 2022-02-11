@@ -64,6 +64,19 @@ The server itself needs a minimal set of configuration values to work:
     - `secret` master secret for hashing
     - `expiration` expiration time in seconds
 
+## Snippets
+
+### NGINX
+
+If you use nginx as a reverse proxy you can copy this snippet. Just replace `??` with your config-data-server docker port.
+
+```conf
+location /config/ {
+        proxy_set_header Host $host;
+        proxy_pass http://localhost:??/;
+}
+```
+
 ## API
 
 ### Overview
